@@ -3,7 +3,7 @@
 DIR=`dirname "$0"`
 
 cp "$DIR/etc/init.d/fake-ec2-metadata-service" /etc/init.d/fake-ec2-metadata-service
-cp "$DIR/etc/network/interfaces.d/fake-ec2-metadata-service" /etc/network/interfaces.d/
+cp "$DIR/etc/network/interfaces.d/*" /etc/network/interfaces.d/
 /etc/init.d/networking restart
 ifup -a
 
