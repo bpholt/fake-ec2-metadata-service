@@ -1,0 +1,51 @@
+#!/bin/bash
+#
+# chkconfig: 35 98 12
+# description: fake-ec2-metadata-service
+#
+SERVICE_NAME=fake-ec2-metadata-service
+LOGFILE=/var/log/fake-ec2-metadata-service
+BASEDIR=/opt/fake-ec2-metadata-service
+LOCKFILE=/var/lock/subsys/fake-ec2-metadata-service
+
+# Get function from functions library
+. /lib/lsb/init-functions
+
+start() {
+        GOMAXPROCS=`nproc`
+        touch $LOGFILE
+
+        [ -f /etc/default/fake-ec2-metadata-service ] && . fake-ec2-metadata-service
+        ${BASEDIR}/fake-ec2-metadata-service.rb > "${LOGFILE}" 2>&1 &
+
+        touch "${LOCKFILE}"
+        success $"${SERVICE_NAME} startup"
+        echo ${SERVICE_NAME}
+}
+
+stop() {
+        killproc fake-ec2-metadata-service
+        ### Now, delete the lock file ###
+        rm -f "${LOCKFILE}"
+        echo ${SERVICE_NAME}
+}
+
+case "$1" in
+  start)
+        start
+        ;;
+  stop)
+        stop
+        ;;
+  status)
+        status ${SERVICE_NAME}
+        ;;
+  restart|reload|condrestart)
+        stop
+        start
+        ;;
+  *)
+        echo $"Usage: $0 {start|stop|restart|reload|status}"
+        exit 1
+esac
+exit $?
