@@ -2,8 +2,10 @@
 
 DIR=`dirname "$0"`
 
-cp "$DIR/etc/init.d/fake-ec2-metadata-service" /etc/init.d/fake-ec2-metadata-service
-cp "$DIR/etc/network/interfaces.d"/* /etc/network/interfaces.d/
+cd "$DIR"
+
+cp "etc/init.d/fake-ec2-metadata-service" /etc/init.d/fake-ec2-metadata-service
+cp "etc/network/interfaces.d"/* /etc/network/interfaces.d/
 /etc/init.d/networking restart
 ifup -a
 
@@ -13,3 +15,4 @@ if ! ifconfig | fgrep 169.254.169.254 > /dev/null 2>&1; then
 fi
 
 gem install bundler
+bundle install
