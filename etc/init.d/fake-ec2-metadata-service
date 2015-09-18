@@ -15,7 +15,7 @@ start() {
         touch $LOGFILE
 
         [ -f /etc/default/fake-ec2-metadata-service ] && . fake-ec2-metadata-service
-        exec ${BASEDIR}/ec2-metadata-service.rb > "${LOGFILE}" 2>&1 &
+        exec ${BASEDIR}/ec2-metadata-service.rb >> "${LOGFILE}" 2>&1 &
 
         log_success_msg $"${SERVICE_NAME} startup"
         echo ${SERVICE_NAME}

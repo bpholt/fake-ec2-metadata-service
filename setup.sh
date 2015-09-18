@@ -11,3 +11,5 @@ if ! ifconfig | fgrep 169.254.169.254 > /dev/null 2>&1; then
     echo "Network setup failed; loopback interface on 169.254.169.254 not available."
     exit 1
 fi
+
+gem install bundler
