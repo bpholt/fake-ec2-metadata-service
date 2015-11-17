@@ -11,6 +11,7 @@ fi
 cd "$DIR"
 
 cp "etc/init.d/fake-ec2-metadata-service" /etc/init.d/fake-ec2-metadata-service
+update-rc.d fake-ec2-metadata-service start 98 3 5 . stop 12 0 1 6 .
 cp "etc/network/interfaces.d"/* /etc/network/interfaces.d/
 /etc/init.d/networking restart
 ifup -a

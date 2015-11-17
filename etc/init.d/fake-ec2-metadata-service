@@ -3,6 +3,16 @@
 # chkconfig: 35 98 12
 # description: fake-ec2-metadata-service
 #
+### BEGIN INIT INFO
+# Provides:          fake-ec2-metadata-service
+# Required-Start:    $network
+# Required-Stop:     $network
+# Default-Start:     3 5
+# Default-Stop:      0 1 6
+# Short-Description: Start fake-ec2-metadata-service at boot time
+# Description:       Enable fake-ec2-metadata-service.
+### END INIT INFO
+
 SERVICE_NAME=fake-ec2-metadata-service
 LOGFILE=/var/log/fake-ec2-metadata-service
 BASEDIR=/opt/fake-ec2-metadata-service
