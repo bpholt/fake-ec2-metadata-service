@@ -10,8 +10,6 @@ fi
 
 cd "$DIR"
 
-cp "etc/init.d/fake-ec2-metadata-service" /etc/init.d/fake-ec2-metadata-service
-update-rc.d fake-ec2-metadata-service start 98 2 3 4 5 . stop 12 0 1 6 .
 cp "etc/network/interfaces.d"/* /etc/network/interfaces.d/
 /etc/init.d/networking restart
 ifup -a
@@ -21,5 +19,3 @@ if ! ifconfig | fgrep 169.254.169.254 > /dev/null 2>&1; then
     exit 1
 fi
 
-gem install bundler
-bundle install

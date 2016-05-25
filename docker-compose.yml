@@ -1,0 +1,4 @@
+fake-ec2-metadata-service:
+  image: bpholt/fake-ec2-metadata-service:latest
+  net: host
+

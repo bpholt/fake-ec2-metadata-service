@@ -12,5 +12,5 @@ COPY Gemfile Gemfile.lock ec2-metadata-service.rb /opt/fake-ec2-metadata-service
 
 RUN bundle install
 
-ENTRYPOINT ["/usr/bin/ruby", "/opt/fake-ec2-metadata-service/ec2-metadata-service.rb"]
+ENTRYPOINT ["/opt/fake-ec2-metadata-service/ec2-metadata-service.rb"]
 
