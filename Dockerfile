@@ -9,8 +9,11 @@ RUN apk update && \
 
 WORKDIR /opt/fake-ec2-metadata-service
 COPY Gemfile Gemfile.lock ec2-metadata-service.rb /opt/fake-ec2-metadata-service/
+COPY spec /opt/fake-ec2-metadata-service/spec/
 
-RUN bundle install
+RUN bundle install --deployment && \
+    bundle exec rspec && \
+    rm -rf spec/ vendor/ && \
+    bundle install --without test --deployment
 
-ENTRYPOINT ["/opt/fake-ec2-metadata-service/ec2-metadata-service.rb"]
-
+ENTRYPOINT ["bundle", "exec", "/opt/fake-ec2-metadata-service/ec2-metadata-service.rb"]
