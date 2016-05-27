@@ -1,7 +1,7 @@
 # Fake EC2 Metadata Service
 
 [![](https://imagelayers.io/badge/bpholt/fake-ec2-metadata-service:latest.svg)](https://imagelayers.io/?images=bpholt/fake-ec2-metadata-service:latest 'Get your own badge on imagelayers.io')
-[![license](https://img.shields.io/github/license/bpholt/fake-ec2-metadata-service.svg?maxAge=2592000&style=flat-square)]()
+[![license](https://img.shields.io/github/license/bpholt/fake-ec2-metadata-service.svg?style=flat-square)]()
 
 So you’re developing an app that will run in a VM locally but relies on the [EC2 Metadata Service](http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html) for some part of its behavior when running in Amazon’s cloud. How do you run the same thing locally?
 
