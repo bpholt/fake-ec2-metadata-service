@@ -19,4 +19,3 @@ RUN bundle install --deployment && \
     bundle install --without test --deployment
 
 ENTRYPOINT ["bundle", "exec", "/opt/fake-ec2-metadata-service/ec2-metadata-service.rb"]
-

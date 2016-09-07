@@ -3,4 +3,3 @@ fake-ec2-metadata-service:
   net: host
   volumes:
     - $HOME/.aws:/opt/aws
-
