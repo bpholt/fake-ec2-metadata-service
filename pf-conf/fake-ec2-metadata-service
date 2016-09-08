@@ -1,0 +1,3 @@
+Packets = "proto tcp from any to 169.254.169.254 port 80"
+rdr pass log on lo0 $Packets -> 127.0.0.1 port 8169
+pass out log route-to lo0 inet $Packets keep state

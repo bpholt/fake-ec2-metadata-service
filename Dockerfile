@@ -2,6 +2,7 @@ FROM alpine:3.3
 MAINTAINER Brian Holt <bholt+docker@planetholt.com>
 
 VOLUME ["/opt/aws"]
+EXPOSE 80
 
 RUN apk update && \
     apk upgrade && \

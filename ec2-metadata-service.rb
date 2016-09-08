@@ -8,7 +8,7 @@ require 'inifile'
 require 'time'
 require 'tilt/erb'
 
-set :bind, '169.254.169.254'
+set :bind, ENV['BIND_ADDR'] || '169.254.169.254'
 set :port, '80'
 
 creds_file = '/opt/aws/credentials'
