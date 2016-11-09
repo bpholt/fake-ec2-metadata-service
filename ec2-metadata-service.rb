@@ -15,8 +15,12 @@ creds_file = '/opt/aws/credentials'
 docker_range = IPAddr.new('172.17.42.1/16')
 
 get '/latest/meta-data/local-ipv4' do
-  ipv4 = (Socket.ip_address_list.select { |a| a.ipv4_private? && !(docker_range === a.ip_address) }).last
-  ipv4.ip_address
+  if ENV['LOCAL_ADDR']
+    ENV['LOCAL_ADDR']
+  else
+    ipv4 = (Socket.ip_address_list.select { |a| a.ipv4_private? && !(docker_range === a.ip_address) }).last
+    ipv4.ip_address
+  end
 end
 
 get '/latest/meta-data/local-hostname' do
