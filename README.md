@@ -23,9 +23,9 @@ docker-compose up
 
 ## Setup on Mac
 
-[Docker for Mac](https://docker.com/mac) doesn’t support the same type of networking features that it does on Linux, so we need a different process.
+[Docker for Mac](https://docker.com/mac) [doesn’t support the same type of networking features that it does on Linux](https://docs.docker.com/docker-for-mac/networking/#/there-is-no-docker0-bridge-on-macos), so we need a different process.
 
-On El Capitan, we can redirect outgoing traffic intended for 169.254.169.254 back to the port forwarding set up by Docker.
+On El Capitan and Sierra, we can redirect outgoing traffic intended for 169.254.169.254 back to the port forwarding set up by Docker.
 
 ```
 +---------------------------------------------+          +-------------------------------------+
@@ -96,6 +96,7 @@ Load and enable the `pf` rules by executing
 
 ```
 sudo pfctl -F all -f /etc/pf.conf
+sudo pfctl -E
 ```
 
 Run the container by executing

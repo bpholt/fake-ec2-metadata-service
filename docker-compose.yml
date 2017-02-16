@@ -1,5 +1,5 @@
 fake-ec2-metadata-service:
-  image: bpholt/fake-ec2-metadata-service:latest
+  image: bpholt/fake-ec2-metadata-service:docker-for-mac
   volumes:
     - $HOME/.aws:/opt/aws
   ports:
