@@ -55,6 +55,28 @@ describe 'EC2 Metadata Service' do
     end
   end
 
+  describe 'GET /latest/meta-data/instance-id' do
+    it 'should return fake Instance ID' do
+      expected_instance_id = 'i-local'
+
+      get '/latest/meta-data/instance-id'
+
+      expect(last_response.status).to eq 200
+      expect(last_response.body).to eq(expected_instance_id)
+    end
+  end
+
+  describe 'GET /latest/meta-data/ami-id' do
+    it 'should return fake AMI ID' do
+      expected_ami = 'ami-local'
+
+      get '/latest/meta-data/ami-id'
+
+      expect(last_response.status).to eq 200
+      expect(last_response.body).to eq(expected_ami)
+    end
+  end
+
   describe 'GET security credentials' do
     it 'should return default role' do
       default_role = 'default'

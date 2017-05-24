@@ -27,6 +27,14 @@ get '/latest/meta-data/local-hostname' do
   `hostname`
 end
 
+get '/latest/meta-data/instance-id' do
+  'i-local'
+end
+
+get '/latest/meta-data/ami-id' do
+  'ami-local'
+end
+
 get '/latest/meta-data/iam/security-credentials/' do
   'default'
 end
