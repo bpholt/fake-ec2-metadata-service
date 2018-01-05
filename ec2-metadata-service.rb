@@ -49,7 +49,6 @@ get '/latest/meta-data/iam/security-credentials/:role' do
         type: 'AWS-HMAC',
         access_key_id: inifile['default']['aws_access_key_id'],
         secret_access_key: inifile['default']['aws_secret_access_key'],
-        token: '',
         expiration: (Time.now.utc + 31622400).iso8601
       }
       render_credentials(aws_credentials)
@@ -74,6 +73,5 @@ __END__
     "Type": "<%= type %>",
     "AccessKeyId": "<%= access_key_id %>",
     "SecretAccessKey": "<%= secret_access_key %>",
-    "Token": "<%= token %>",
     "Expiration": "<%= expiration %>"
 }
