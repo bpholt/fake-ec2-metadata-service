@@ -9,9 +9,7 @@ COPY spec /opt/fake-ec2-metadata-service/spec/
 
 RUN apk update && \
     apk upgrade && \
-    apk add ruby ruby-io-console ruby-bundler && \
-    apk --update add ca-certificates ruby && \
-    rm -rf /var/cache/apk/* && \
+    apk --update --no-cache add ca-certificates ruby ruby-io-console ruby-bundler && \
     mkdir -p /opt/fake-ec2-metadata-service && \
     bundle install --deployment && \
     bundle exec rspec && \
@@ -20,4 +18,3 @@ RUN apk update && \
 
 EXPOSE 80
 ENTRYPOINT ["bundle", "exec", "/opt/fake-ec2-metadata-service/ec2-metadata-service.rb"]
-

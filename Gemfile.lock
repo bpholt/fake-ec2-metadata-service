@@ -1,50 +1,56 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    backports (3.6.6)
-    diff-lcs (1.2.5)
+    backports (3.10.3)
+    diff-lcs (1.3)
     inifile (3.0.0)
-    multi_json (1.11.2)
-    rack (1.6.4)
-    rack-protection (1.5.3)
+    json_pure (2.1.0)
+    multi_json (1.12.2)
+    mustermann (1.0.1)
+    rack (2.0.3)
+    rack-protection (2.0.0)
       rack
-    rack-test (0.6.3)
-      rack (>= 1.0)
-    rspec (3.4.0)
-      rspec-core (~> 3.4.0)
-      rspec-expectations (~> 3.4.0)
-      rspec-mocks (~> 3.4.0)
-    rspec-core (3.4.4)
-      rspec-support (~> 3.4.0)
-    rspec-expectations (3.4.0)
+    rack-test (0.8.2)
+      rack (>= 1.0, < 3)
+    rspec (3.7.0)
+      rspec-core (~> 3.7.0)
+      rspec-expectations (~> 3.7.0)
+      rspec-mocks (~> 3.7.0)
+    rspec-core (3.7.0)
+      rspec-support (~> 3.7.0)
+    rspec-expectations (3.7.0)
       diff-lcs (>= 1.2.0, < 2.0)
-      rspec-support (~> 3.4.0)
-    rspec-mocks (3.4.1)
+      rspec-support (~> 3.7.0)
+    rspec-json_expectations (2.1.0)
+    rspec-mocks (3.7.0)
       diff-lcs (>= 1.2.0, < 2.0)
-      rspec-support (~> 3.4.0)
-    rspec-support (3.4.1)
-    sinatra (1.4.6)
-      rack (~> 1.4)
-      rack-protection (~> 1.4)
-      tilt (>= 1.3, < 3)
-    sinatra-contrib (1.4.6)
+      rspec-support (~> 3.7.0)
+    rspec-support (3.7.0)
+    sinatra (2.0.0)
+      mustermann (~> 1.0)
+      rack (~> 2.0)
+      rack-protection (= 2.0.0)
+      tilt (~> 2.0)
+    sinatra-contrib (2.0.0)
       backports (>= 2.0)
       multi_json
-      rack-protection
-      rack-test
-      sinatra (~> 1.4.0)
+      mustermann (~> 1.0)
+      rack-protection (= 2.0.0)
+      sinatra (= 2.0.0)
       tilt (>= 1.3, < 3)
-    tilt (2.0.1)
+    tilt (2.0.8)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
   inifile (~> 3.0)
+  json_pure
   rack-test
   rspec
+  rspec-json_expectations
   sinatra
   sinatra-contrib
 
 BUNDLED WITH
-   1.10.6
+   1.13.4
