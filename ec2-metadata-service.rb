@@ -12,15 +12,9 @@ set :bind, ENV['BIND_ADDR'] || '169.254.169.254'
 set :port, '80'
 
 creds_file = '/opt/aws/credentials'
-docker_range = IPAddr.new('172.17.42.1/16')
 
 get '/latest/meta-data/local-ipv4' do
-  if ENV['LOCAL_ADDR']
-    ENV['LOCAL_ADDR']
-  else
-    ipv4 = (Socket.ip_address_list.select { |a| a.ipv4_private? && !(docker_range === a.ip_address) }).last
-    ipv4.ip_address
-  end
+  local_ip
 end
 
 get '/latest/meta-data/local-hostname' do
@@ -28,11 +22,11 @@ get '/latest/meta-data/local-hostname' do
 end
 
 get '/latest/meta-data/instance-id' do
-  'i-local'
+  instance_id
 end
 
 get '/latest/meta-data/ami-id' do
-  'ami-local'
+  ami_id
 end
 
 get '/latest/meta-data/iam/security-credentials/' do
@@ -60,8 +54,42 @@ get '/latest/meta-data/iam/security-credentials/:role' do
   end
 end
 
+get '/latest/dynamic/instance-identity/document' do
+  identity = {
+    region: 'us-west-2',
+    pending_time: Time.now.utc.iso8601,
+    private_ip: local_ip,
+    instance_id: instance_id,
+    ami_id: ami_id
+  }
+
+  render_instance_identity_document(identity)
+end
+
 def render_credentials(creds)
   erb :credentials, locals: creds
+end
+
+def render_instance_identity_document(identity)
+  erb :instanceIdentity, locals: identity
+end
+
+def local_ip
+  docker_range = IPAddr.new('172.17.42.1/16')
+  if ENV['LOCAL_ADDR']
+    ENV['LOCAL_ADDR']
+  else
+    ipv4 = (Socket.ip_address_list.select { |a| a.ipv4_private? && !(docker_range === a.ip_address) }).last
+    ipv4.ip_address
+  end
+end
+
+def instance_id
+  'i-local'
+end
+
+def ami_id
+  'ami-local'
 end
 
 __END__
@@ -74,4 +102,23 @@ __END__
     "AccessKeyId": "<%= access_key_id %>",
     "SecretAccessKey": "<%= secret_access_key %>",
     "Expiration": "<%= expiration %>"
+}
+
+@@ instanceIdentity
+{
+    "devpayProductCodes" : null,
+    "marketplaceProductCodes" : [],
+    "availabilityZone" : "<%= region %>b",
+    "privateIp" : "<%= private_ip %>",
+    "version" : "2017-09-30",
+    "instanceId" : "<%= instance_id %>",
+    "billingProducts" : null,
+    "instanceType" : "t2.micro",
+    "accountId" : "123456789012",
+    "imageId" : "<%= ami_id %>",
+    "pendingTime" : "<%= pending_time %>",
+    "architecture" : "x86_64",
+    "kernelId" : null,
+    "ramdiskId" : null,
+    "region" : "<%= region %>"
 }

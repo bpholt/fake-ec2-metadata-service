@@ -1,6 +1,7 @@
 require_relative '../ec2-metadata-service.rb'
 require 'rspec'
 require 'rack/test'
+require 'rspec/json_expectations'
 
 set :environment, :test
 
@@ -140,4 +141,27 @@ describe 'EC2 Metadata Service' do
     end
 
   end
-end  
+
+  describe 'GET instance identity document' do
+    it 'should return an instance identity document' do
+      test_ip = '192.168.42.42'
+      allow(Socket).to receive_messages(ip_address_list: [Addrinfo.ip(test_ip)])
+
+      now = Time.now.utc
+      allow(Time).to receive_messages(now: now)
+
+      get '/latest/dynamic/instance-identity/document'
+
+      expect(last_response.status).to eq 200
+      expect(last_response.body).to include_json(
+        availabilityZone: 'us-west-2b',
+        privateIp: test_ip,
+        version: '2017-09-30',
+        imageId: 'ami-local',
+        pendingTime: now.iso8601,
+        instanceId: 'i-local',
+        region: 'us-west-2',
+      )
+    end
+  end
+end
