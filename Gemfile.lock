@@ -5,7 +5,7 @@ GEM
     diff-lcs (1.2.5)
     inifile (3.0.0)
     multi_json (1.11.2)
-    rack (1.6.4)
+    rack (1.6.12)
     rack-protection (1.5.3)
       rack
     rack-test (0.6.3)
