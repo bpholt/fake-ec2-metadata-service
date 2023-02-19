@@ -7,6 +7,10 @@ You’re developing an app that will run in a VM locally but relies on the [EC2 
 
 Enter the Fake EC2 Metadata Service, a simple Sinatra app that exposes some of the functionality running on http://169.254.169.254.
 
+## Override IMDS Endpoint Url
+
+Set the `AWS_EC2_METADATA_SERVICE_ENDPOINT` environment variable in the process that you'd like to use the Fake EC2 Metadata Service.
+
 ## Setup on Linux
 
 Create a loopback interface bound to 169.254.169.254 (this probably needs to be run with root privileges):

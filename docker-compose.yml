@@ -1,9 +1,6 @@
 fake-ec2-metadata-service:
   image: bpholt/fake-ec2-metadata-service:latest
   volumes:
-    - $HOME/.aws:/opt/aws
+    - $HOME/.aws:/home/demiourgos728/.aws:ro  # demiourgos728 comes from sbt-native-packager
   ports:
-    - 8169:80
-  environment:
-    - BIND_ADDR=0.0.0.0
-    - LOCAL_ADDR
+    - 8169:8169
