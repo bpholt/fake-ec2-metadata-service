@@ -12,6 +12,7 @@ ThisBuild / developers := List(
 ThisBuild / scalaVersion := "2.13.10"
 ThisBuild / githubWorkflowScalaVersions := Seq("2.13")
 ThisBuild / githubWorkflowJavaVersions := Seq(JavaSpec.temurin("17"))
+ThisBuild / githubWorkflowTargetTags := Seq("v*")
 ThisBuild / githubWorkflowBuild += WorkflowStep.Sbt(List("Docker/stage"))
 
 ThisBuild / githubWorkflowPublishPreamble := Seq(
