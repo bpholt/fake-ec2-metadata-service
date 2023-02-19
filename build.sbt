@@ -11,6 +11,14 @@ ThisBuild / developers := List(
 ThisBuild / scalaVersion := "2.13.10"
 ThisBuild / githubWorkflowScalaVersions := Seq("2.13")
 ThisBuild / githubWorkflowJavaVersions := Seq(JavaSpec.temurin("17"))
+ThisBuild / githubWorkflowPublishPreamble := Seq(
+  WorkflowStep.Use(name = Option("DockerHub Login"), ref = UseRef.Public("docker", "login-action", "v2"), params = Map(
+    "username" -> "${{ secrets.DOCKERHUB_USERNAME }}",
+    "password" -> "${{ secrets.DOCKERHUB_TOKEN }}",
+  ))
+)
+ThisBuild / githubWorkflowPublish := Seq(WorkflowStep.Sbt(List("Docker/publish")))
+ThisBuild / githubWorkflowPublishTargetBranches := Seq(RefPredicate.StartsWith(Ref.Tag("v")))
 ThisBuild / tlCiMimaBinaryIssueCheck := false
 
 lazy val root = project.in(file(".")).enablePlugins(NoPublishPlugin).aggregate(
@@ -41,5 +49,6 @@ lazy val `fake-ec2-metadata-service` = project
     dockerUsername := Option("bpholt"),
     dockerBaseImage := "eclipse-temurin:17",
     dockerExposedPorts += 8169,
+    dockerUpdateLatest := true,
   )
   .enablePlugins(JavaServerAppPackaging, DockerPlugin)
