@@ -5,11 +5,13 @@
 
 You’re developing an app that will run in a VM locally but relies on the [EC2 Metadata Service](http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html) for some part of its behavior when running in Amazon’s cloud. How do you run the same thing locally?
 
-Enter the Fake EC2 Metadata Service, a simple Sinatra app that exposes some of the functionality running on http://169.254.169.254.
+Enter the Fake EC2 Metadata Service, a simple http4s app that exposes some of the functionality running on http://169.254.169.254.
 
 ## Override IMDS Endpoint Url
 
 Set the `AWS_EC2_METADATA_SERVICE_ENDPOINT` environment variable in the process that you'd like to use the Fake EC2 Metadata Service.
+
+If you do this, you can run this on whatever port you want and ignore all the following setup instructions!
 
 ## Setup on Linux
 
