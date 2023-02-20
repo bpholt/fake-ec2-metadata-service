@@ -154,6 +154,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Docker meta
+        id: meta
         uses: docker/metadata-action@v4
         with:
           images: bpholt/fake-ec2-metadata-service

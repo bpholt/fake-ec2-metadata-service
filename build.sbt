@@ -24,7 +24,7 @@ ThisBuild / githubWorkflowPublishPreamble := Seq(
   )),
 )
 ThisBuild / githubWorkflowPublish := Seq(
-  WorkflowStep.Use(name = Option("Docker meta"), ref = UseRef.Public("docker", "metadata-action", "v4"), params = Map(
+  WorkflowStep.Use(id = Option("meta"), name = Option("Docker meta"), ref = UseRef.Public("docker", "metadata-action", "v4"), params = Map(
     "images" ->
       (`fake-ec2-metadata-service` / dockerUsername)
         .value
