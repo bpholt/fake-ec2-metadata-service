@@ -9,7 +9,7 @@ ThisBuild / developers := List(
   tlGitHubDev("bpholt", "Brian Holt")
 )
 
-ThisBuild / scalaVersion := "2.13.10"
+ThisBuild / scalaVersion := "2.13.11"
 ThisBuild / githubWorkflowScalaVersions := Seq("2.13")
 ThisBuild / githubWorkflowJavaVersions := Seq(JavaSpec.temurin("17"))
 ThisBuild / githubWorkflowTargetTags := Seq("v*")
@@ -58,7 +58,7 @@ lazy val `fake-ec2-metadata-service` = project
       "io.circe" %% "circe-core" % "0.14.4",
       "io.circe" %% "circe-generic" % "0.14.4",
       "dev.holt" %% "java-time-literals" % "1.1.1",
-      "software.amazon.awssdk" % "profiles" % "2.20.77",
+      "software.amazon.awssdk" % "profiles" % "2.20.81",
       "ch.qos.logback" % "logback-classic" % "1.4.7" % Runtime,
       "org.typelevel" %% "munit-cats-effect" % "2.0.0-M3" % Test,
       "org.typelevel" %% "scalacheck-effect-munit" % "2.0.0-M2" % Test,
