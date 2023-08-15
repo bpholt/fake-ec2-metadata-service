@@ -65,7 +65,7 @@ lazy val `fake-ec2-metadata-service` = project
       "org.http4s" %% "http4s-client" % "0.23.18" % Test,
       "com.comcast" %% "ip4s-test-kit" % "3.3.0" % Test,
       "eu.timepit" %% "refined-scalacheck" % "0.10.1" % Test,
-      "org.typelevel" %% "cats-testkit" % "2.9.0" % Test,
+      "org.typelevel" %% "cats-testkit" % "2.10.0" % Test,
       "io.circe" %% "circe-literal" % "0.14.5" % Test,
     ),
     dockerUsername := Option("bpholt"),
