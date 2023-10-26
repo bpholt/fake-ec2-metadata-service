@@ -1,6 +1,7 @@
 package dev.holt.imds
 
 import cats.effect.*
+import cats.effect.std.*
 import cats.syntax.all.*
 import io.circe.literal.*
 import io.circe.syntax.*
@@ -10,7 +11,7 @@ import org.http4s.circe.jsonEncoder
 import org.http4s.dsl.Http4sDsl
 import org.http4s.server.Router
 
-class FakeInstanceMetadataService[F[_] : Concurrent](instanceMetadata: InstanceMetadata[F]) extends Http4sDsl[F] {
+class FakeInstanceMetadataService[F[_] : Concurrent : UUIDGen](instanceMetadata: InstanceMetadata[F]) extends Http4sDsl[F] {
 
   private val iam: HttpRoutes[F] = Router("iam" -> HttpRoutes.of[F] {
     case GET -> Root / "security-credentials" | GET -> Root / "security-credentials" / "" =>
@@ -82,9 +83,19 @@ class FakeInstanceMetadataService[F[_] : Concurrent](instanceMetadata: InstanceM
 
   }
 
+  private val api = HttpRoutes.of[F] {
+    /* TODO this should actually record the generated token with a passed TTL, and
+        then validate that incoming requests include the token, but it's not clear
+        to me why this matters in this text context, so I'm punting on it for now
+     */
+    case req@PUT -> Root / "token" =>
+      req.as[Unit] *> UUIDGen.randomString.flatMap(Ok(_))
+  }
+
   val routes: HttpRoutes[F] = Router(
     "/latest/meta-data" -> latestMetaData,
     "/latest/dynamic" -> dynamic,
+    "/latest/api" -> api
   )
 }
 

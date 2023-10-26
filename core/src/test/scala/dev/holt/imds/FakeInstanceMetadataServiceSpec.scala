@@ -3,7 +3,7 @@ package dev.holt.imds
 import cats.Applicative
 import cats.data.NonEmptyList
 import cats.effect.*
-import cats.effect.std.Env
+import cats.effect.std.{Env, UUIDGen}
 import cats.laws.discipline.arbitrary.*
 import cats.syntax.all.*
 import com.comcast.ip4s.*
@@ -27,6 +27,7 @@ import org.scalacheck.{Arbitrary, Gen, Shrink}
 import java.time.Instant
 import java.time.format.DateTimeFormatter.ISO_INSTANT
 import java.time.temporal.ChronoUnit.HOURS
+import java.util.UUID
 import scala.collection.immutable
 import scala.concurrent.duration.FiniteDuration
 
@@ -205,6 +206,19 @@ class FakeInstanceMetadataServiceSpec
         .map { output =>
           assertEquals(output, defaultRegion.orElse(region).getOrElse("us-west-2"))
         }
+    }
+  }
+
+  test("PUT /latest/api/token") {
+    forAllF { (generatedToken: UUID) =>
+      implicit val uuidGen: UUIDGen[IO] = new UUIDGen[IO] {
+        override def randomUUID: IO[UUID] = generatedToken.pure[IO]
+      }
+
+      val client = org.http4s.client.Client.fromHttpApp(new FakeInstanceMetadataService(InstanceMetadata[IO]).routes.orNotFound)
+
+      client.expect[String](PUT(uri"/latest/api/token"))
+        .map(assertEquals(_, generatedToken.toString))
     }
   }
 
