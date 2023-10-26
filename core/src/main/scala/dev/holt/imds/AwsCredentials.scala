@@ -1,11 +1,10 @@
 package dev.holt.imds
 
-import cats.effect._
-import cats.syntax.all._
+import cats.effect.*
+import cats.syntax.all.*
 import software.amazon.awssdk.profiles.{Profile, ProfileFile}
 
-import java.time.{Clock => _}
-import scala.jdk.CollectionConverters._
+import scala.jdk.CollectionConverters.*
 
 trait AwsCredentials[F[_]] {
   def loadProfiles: F[Map[String, Profile]]

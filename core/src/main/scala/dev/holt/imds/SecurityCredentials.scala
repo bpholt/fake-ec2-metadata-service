@@ -4,7 +4,7 @@ import io.circe.generic.semiauto.deriveCodec
 import io.circe.{Codec, Encoder}
 
 import java.time.format.DateTimeFormatter.ISO_INSTANT
-import java.time.{Clock => _, _}
+import java.time.{Clock as _, *}
 import scala.annotation.nowarn
 
 case class SecurityCredentials(Code: String = "Success",

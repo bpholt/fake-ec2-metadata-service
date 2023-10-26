@@ -1,13 +1,12 @@
 package dev.holt.imds
 
-import cats.effect._
-import cats.syntax.all._
-import com.comcast.ip4s._
-import fs2._
+import cats.effect.*
+import cats.syntax.all.*
+import com.comcast.ip4s.*
+import fs2.*
 
 import java.net.{InetAddress, NetworkInterface}
-import java.time.{Clock => _}
-import scala.jdk.CollectionConverters._
+import scala.jdk.CollectionConverters.*
 
 trait NetworkInterfaces[F[_]] {
   def listInterfaces: Stream[F, NetworkInterface]

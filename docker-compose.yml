@@ -1,6 +1,8 @@
-fake-ec2-metadata-service:
-  image: bpholt/fake-ec2-metadata-service:latest
-  volumes:
-    - $HOME/.aws:/home/demiourgos728/.aws:ro  # demiourgos728 comes from sbt-native-packager
-  ports:
-    - 8169:8169
+version: "3.8"
+services:
+  fake-ec2-metadata-service:
+    image: bpholt/fake-ec2-metadata-service:latest
+    volumes:
+      - $HOME/.aws:/home/demiourgos728/.aws:ro  # demiourgos728 comes from sbt-native-packager
+    ports:
+      - 8169:8169

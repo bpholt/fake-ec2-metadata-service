@@ -2,37 +2,33 @@ package dev.holt.imds
 
 import cats.Applicative
 import cats.data.NonEmptyList
-import cats.effect._
+import cats.effect.*
 import cats.effect.std.Env
-import cats.laws.discipline.arbitrary._
-import cats.syntax.all._
-import com.comcast.ip4s.Arbitraries._
-import com.comcast.ip4s._
-import dev.holt.javatime.literals._
-import eu.timepit.refined.scalacheck.all._
+import cats.laws.discipline.arbitrary.*
+import cats.syntax.all.*
+import com.comcast.ip4s.*
+import com.comcast.ip4s.Arbitraries.*
+import dev.holt.javatime.literals.*
+import eu.timepit.refined.scalacheck.all.*
 import eu.timepit.refined.types.all.NonEmptyString
-import io.circe._
-import io.circe.literal._
-import fs2._
+import io.circe.*
+import io.circe.literal.*
 import munit.{CatsEffectSuite, ScalaCheckEffectSuite}
-import org.http4s.Method.GET
+import org.http4s.Method.*
 import org.http4s.Status.NotFound
 import org.http4s.circe.jsonDecoder
 import org.http4s.client.UnexpectedStatus
 import org.http4s.client.dsl.Http4sClientDsl
-import org.http4s.syntax.all._
+import org.http4s.syntax.all.*
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.effect.PropF.forAllF
 import org.scalacheck.{Arbitrary, Gen, Shrink}
-import software.amazon.awssdk.profiles.Profile
 
-import java.net.{InetAddress, NetworkInterface}
 import java.time.Instant
 import java.time.format.DateTimeFormatter.ISO_INSTANT
 import java.time.temporal.ChronoUnit.HOURS
 import scala.collection.immutable
 import scala.concurrent.duration.FiniteDuration
-import scala.jdk.CollectionConverters._
 
 class FakeInstanceMetadataServiceSpec
   extends CatsEffectSuite
@@ -47,7 +43,7 @@ class FakeInstanceMetadataServiceSpec
     )
   }
 
-  test("/latest/meta-data/local-ipv4") {
+  test("GET /latest/meta-data/local-ipv4") {
     forAllF { (envAddr: Option[IpAddress], ipAddress: Option[IpAddress]) =>
       implicit val env: Env[IO] = new Env[IO] {
         override def get(name: String): IO[Option[String]] = entries.map(_.toMap.get(name))
@@ -59,7 +55,7 @@ class FakeInstanceMetadataServiceSpec
         override def guessMyIp: IO[Option[IpAddress]] = IO.pure(ipAddress)
       }
 
-      val client = org.http4s.client.Client.fromHttpApp(new FakeInstanceMetadataService[IO].routes.orNotFound)
+      val client = org.http4s.client.Client.fromHttpApp(new FakeInstanceMetadataService(InstanceMetadata[IO]).routes.orNotFound)
 
       client.expect[String](GET(uri"/latest/meta-data/local-ipv4"))
         .attempt
@@ -72,13 +68,13 @@ class FakeInstanceMetadataServiceSpec
     }
   }
 
-  test("/latest/meta-data/local-hostname") {
+  test("GET /latest/meta-data/local-hostname") {
     forAllF { host: Option[Host] =>
       implicit val networkInterfaces: NetworkInterfaces[IO] = new NoNetworkInterfaces[IO] {
         override def guessMyHostname: IO[Option[Host]] = IO.pure(host)
       }
 
-      val client = org.http4s.client.Client.fromHttpApp(new FakeInstanceMetadataService[IO].routes.orNotFound)
+      val client = org.http4s.client.Client.fromHttpApp(new FakeInstanceMetadataService(InstanceMetadata[IO]).routes.orNotFound)
 
       client.expect[String](GET(uri"/latest/meta-data/local-hostname"))
         .attempt
@@ -91,10 +87,10 @@ class FakeInstanceMetadataServiceSpec
     }
   }
 
-  test("/latest/meta-data/instance-id") {
+  test("GET /latest/meta-data/instance-id") {
     implicit val networkInterfaces: NetworkInterfaces[IO] = NoNetworkInterfaces[IO]
 
-    val client = org.http4s.client.Client.fromHttpApp(new FakeInstanceMetadataService[IO].routes.orNotFound)
+    val client = org.http4s.client.Client.fromHttpApp(new FakeInstanceMetadataService(InstanceMetadata[IO]).routes.orNotFound)
 
     client.expect[String](GET(uri"/latest/meta-data/instance-id"))
       .map { output =>
@@ -102,10 +98,10 @@ class FakeInstanceMetadataServiceSpec
       }
   }
 
-  test("/latest/meta-data/ami-id") {
+  test("GET /latest/meta-data/ami-id") {
     implicit val networkInterfaces: NetworkInterfaces[IO] = NoNetworkInterfaces[IO]
 
-    val client = org.http4s.client.Client.fromHttpApp(new FakeInstanceMetadataService[IO].routes.orNotFound)
+    val client = org.http4s.client.Client.fromHttpApp(new FakeInstanceMetadataService(InstanceMetadata[IO]).routes.orNotFound)
 
     client.expect[String](GET(uri"/latest/meta-data/ami-id"))
       .map { output =>
@@ -113,7 +109,7 @@ class FakeInstanceMetadataServiceSpec
       }
   }
 
-  test("/latest/meta-data/iam/security-credentials") {
+  test("GET /latest/meta-data/iam/security-credentials") {
     forAllF { profile: Option[String] =>
       implicit val networkInterfaces: NetworkInterfaces[IO] = NoNetworkInterfaces[IO]
       implicit val env: Env[IO] = new Env[IO] {
@@ -123,7 +119,7 @@ class FakeInstanceMetadataServiceSpec
         override def entries: IO[immutable.Iterable[(String, String)]] = Map.empty.pure[IO]
       }
 
-      val client = org.http4s.client.Client.fromHttpApp(new FakeInstanceMetadataService[IO].routes.orNotFound)
+      val client = org.http4s.client.Client.fromHttpApp(new FakeInstanceMetadataService(InstanceMetadata[IO]).routes.orNotFound)
 
       client.expect[String](GET(uri"/latest/meta-data/iam/security-credentials"))
         .map { output =>
@@ -132,7 +128,7 @@ class FakeInstanceMetadataServiceSpec
     }
   }
 
-  test("/latest/meta-data/iam/security-credentials/") {
+  test("GET /latest/meta-data/iam/security-credentials/") {
     forAllF { profile: Option[String] =>
       implicit val networkInterfaces: NetworkInterfaces[IO] = NoNetworkInterfaces[IO]
       implicit val env: Env[IO] = new Env[IO] {
@@ -142,7 +138,7 @@ class FakeInstanceMetadataServiceSpec
         override def entries: IO[immutable.Iterable[(String, String)]] = Map.empty.pure[IO]
       }
 
-      val client = org.http4s.client.Client.fromHttpApp(new FakeInstanceMetadataService[IO].routes.orNotFound)
+      val client = org.http4s.client.Client.fromHttpApp(new FakeInstanceMetadataService(InstanceMetadata[IO]).routes.orNotFound)
 
       client.expect[String](GET(uri"/latest/meta-data/iam/security-credentials/"))
         .map { output =>
@@ -161,7 +157,7 @@ class FakeInstanceMetadataServiceSpec
 
   private implicit def shrinkProfiles[F[_]]: Shrink[AwsCredentials[F]] = Shrink.shrinkAny
 
-  test("/latest/meta-data/iam/security-credentials/{profile}") {
+  test("GET /latest/meta-data/iam/security-credentials/{profile}") {
     forAllF { (creds: AwsCredentials[IO], ts: FiniteDuration) =>
       implicit val networkInterfaces: NetworkInterfaces[IO] = NoNetworkInterfaces[IO]
       implicit val awsCredentials: AwsCredentials[IO] = creds
@@ -171,7 +167,7 @@ class FakeInstanceMetadataServiceSpec
         override def realTime: IO[FiniteDuration] = IO.pure(ts)
       }
 
-      val client = org.http4s.client.Client.fromHttpApp(new FakeInstanceMetadataService[IO].routes.orNotFound)
+      val client = org.http4s.client.Client.fromHttpApp(new FakeInstanceMetadataService(InstanceMetadata[IO]).routes.orNotFound)
 
       creds.loadProfiles.flatMap {
         _.toList.traverse_ { case (k, v) =>
@@ -192,7 +188,7 @@ class FakeInstanceMetadataServiceSpec
     }
   }
 
-  test("/latest/meta-data/placement/region") {
+  test("GET /latest/meta-data/placement/region") {
     forAllF { (defaultRegion: Option[String], region: Option[String]) =>
       implicit val env: Env[IO] = new Env[IO] {
         override def get(name: String): IO[Option[String]] =
@@ -203,33 +199,12 @@ class FakeInstanceMetadataServiceSpec
             region.map("AWS_REGION" -> _)).toList.pure[IO]
       }
 
-      val client = org.http4s.client.Client.fromHttpApp(new FakeInstanceMetadataService[IO].routes.orNotFound)
+      val client = org.http4s.client.Client.fromHttpApp(new FakeInstanceMetadataService(InstanceMetadata[IO]).routes.orNotFound)
 
       client.expect[String](GET(uri"/latest/meta-data/placement/region"))
         .map { output =>
           assertEquals(output, defaultRegion.orElse(region).getOrElse("us-west-2"))
         }
     }
-  }
-}
-
-object NoNetworkInterfaces {
-  def apply[F[_] : Applicative]: NetworkInterfaces[F] = new NoNetworkInterfaces[F]
-}
-
-class NoNetworkInterfaces[F[_] : Applicative] extends NetworkInterfaces[F] {
-  override def listInterfaces: Stream[F, NetworkInterface] = Stream.empty
-  override def listIps: Stream[F, InetAddress] = Stream.empty
-  override def guessMyIp: F[Option[IpAddress]] = none[IpAddress].pure[F]
-  override def guessMyHostname: F[Option[Host]] = none[Host].pure[F]
-}
-
-object AwsCredentialsMap {
-  def apply[F[_] : Applicative](map: Map[String, Map[String, String]]): AwsCredentials[F] = new AwsCredentials[F] {
-    override def loadProfiles: F[Map[String, Profile]] = map.map { case (k, v) =>
-      k -> Profile.builder().name(k).properties(v.asJava).build()
-    }.pure[F]
-
-    override def loadProfile(profile: String): F[Option[Profile]] = loadProfiles.map(_.get(profile))
   }
 }
