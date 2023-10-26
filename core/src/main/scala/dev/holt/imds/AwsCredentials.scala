@@ -12,9 +12,9 @@ trait AwsCredentials[F[_]] {
 }
 
 object AwsCredentials {
-  def apply[F[_] : AwsCredentials]: AwsCredentials[F] = implicitly
+  def apply[F[_] : AwsCredentials]: AwsCredentials[F] = summon
 
-  implicit def instance[F[_] : Sync]: AwsCredentials[F] = new AwsCredentials[F] {
+  given [F[_]](using Sync[F]): AwsCredentials[F] with {
     override def loadProfiles: F[Map[String, Profile]] =
       Sync[F].delay {
         ProfileFile
@@ -23,7 +23,6 @@ object AwsCredentials {
           .asScala
           .toMap
       }
-
     override def loadProfile(profile: String): F[Option[Profile]] =
       loadProfiles.map(_.get(profile))
   }

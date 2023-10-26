@@ -11,15 +11,14 @@ package object imds {
   type AmiId = AmiId.Type
   type Region = Region.Type
 
-  implicit val ipAddressEncoder: Encoder[IpAddress] = Encoder[String].contramap(_.toString)
+  given Encoder[IpAddress] = Encoder[String].contramap(_.toString)
 
-  implicit def newtypeEntityEncoder[F[_], A, B](implicit he: HasExtractor.Aux[B, A],
-                                                ee: EntityEncoder[F, A],
-                                               ): EntityEncoder[F, B] =
+  given[F[_], A, B](using he: HasExtractor.Aux[B, A])
+                   (using EntityEncoder[F, A]): EntityEncoder[F, B] =
     EntityEncoder[F, A].contramap(he.extract)
 
-  implicit def newtypeJsonEncoder[A, B](implicit he: HasExtractor.Aux[B, A],
-                                        e: Encoder[A]): Encoder[B] =
+  given[A, B](using he: HasExtractor.Aux[B, A])
+             (using Encoder[A]): Encoder[B] =
     Encoder[A].contramap(he.extract)
 }
 

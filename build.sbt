@@ -9,8 +9,8 @@ ThisBuild / developers := List(
   tlGitHubDev("bpholt", "Brian Holt")
 )
 
-ThisBuild / scalaVersion := "2.13.12"
-ThisBuild / githubWorkflowScalaVersions := Seq("2.13")
+ThisBuild / scalaVersion := "3.3.1"
+ThisBuild / githubWorkflowScalaVersions := Seq("3")
 ThisBuild / githubWorkflowJavaVersions := Seq(JavaSpec.temurin("17"))
 ThisBuild / githubWorkflowTargetTags := Seq("v*")
 ThisBuild / githubWorkflowBuild += WorkflowStep.Sbt(List("Docker/stage"))

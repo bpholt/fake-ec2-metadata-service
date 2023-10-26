@@ -36,7 +36,7 @@ class FakeInstanceMetadataServiceSpec
     with ScalaCheckEffectSuite
     with Http4sClientDsl[IO] {
 
-  private implicit val arbHost: Arbitrary[Host] = Arbitrary {
+  private given Arbitrary[Host] = Arbitrary {
     Gen.oneOf(
       arbitrary[Hostname],
       arbitrary[IDN],
@@ -46,13 +46,14 @@ class FakeInstanceMetadataServiceSpec
 
   test("GET /latest/meta-data/local-ipv4") {
     forAllF { (envAddr: Option[IpAddress], ipAddress: Option[IpAddress]) =>
-      implicit val env: Env[IO] = new Env[IO] {
+      given Env[IO] with {
         override def get(name: String): IO[Option[String]] = entries.map(_.toMap.get(name))
+
         override def entries: IO[immutable.Iterable[(String, String)]] =
           envAddr.map(_.toString).map("LOCAL_ADDR" -> _).toList.pure[IO]
       }
 
-      implicit val networkInterfaces: NetworkInterfaces[IO] = new NoNetworkInterfaces[IO] {
+      given NetworkInterfaces[IO] = new NoNetworkInterfaces[IO] {
         override def guessMyIp: IO[Option[IpAddress]] = IO.pure(ipAddress)
       }
 
@@ -70,8 +71,8 @@ class FakeInstanceMetadataServiceSpec
   }
 
   test("GET /latest/meta-data/local-hostname") {
-    forAllF { host: Option[Host] =>
-      implicit val networkInterfaces: NetworkInterfaces[IO] = new NoNetworkInterfaces[IO] {
+    forAllF { (host: Option[Host]) =>
+      given NetworkInterfaces[IO] = new NoNetworkInterfaces[IO] {
         override def guessMyHostname: IO[Option[Host]] = IO.pure(host)
       }
 
@@ -89,7 +90,7 @@ class FakeInstanceMetadataServiceSpec
   }
 
   test("GET /latest/meta-data/instance-id") {
-    implicit val networkInterfaces: NetworkInterfaces[IO] = NoNetworkInterfaces[IO]
+    given NetworkInterfaces[IO] = NoNetworkInterfaces[IO]
 
     val client = org.http4s.client.Client.fromHttpApp(new FakeInstanceMetadataService(InstanceMetadata[IO]).routes.orNotFound)
 
@@ -100,7 +101,7 @@ class FakeInstanceMetadataServiceSpec
   }
 
   test("GET /latest/meta-data/ami-id") {
-    implicit val networkInterfaces: NetworkInterfaces[IO] = NoNetworkInterfaces[IO]
+    given NetworkInterfaces[IO] = NoNetworkInterfaces[IO]
 
     val client = org.http4s.client.Client.fromHttpApp(new FakeInstanceMetadataService(InstanceMetadata[IO]).routes.orNotFound)
 
@@ -111,9 +112,9 @@ class FakeInstanceMetadataServiceSpec
   }
 
   test("GET /latest/meta-data/iam/security-credentials") {
-    forAllF { profile: Option[String] =>
-      implicit val networkInterfaces: NetworkInterfaces[IO] = NoNetworkInterfaces[IO]
-      implicit val env: Env[IO] = new Env[IO] {
+    forAllF { (profile: Option[String]) =>
+      given NetworkInterfaces[IO] = NoNetworkInterfaces[IO]
+      given Env[IO] with {
         override def get(name: String): IO[Option[String]] =
           profile.filter(_ => name == "AWS_PROFILE").pure[IO]
 
@@ -130,9 +131,9 @@ class FakeInstanceMetadataServiceSpec
   }
 
   test("GET /latest/meta-data/iam/security-credentials/") {
-    forAllF { profile: Option[String] =>
-      implicit val networkInterfaces: NetworkInterfaces[IO] = NoNetworkInterfaces[IO]
-      implicit val env: Env[IO] = new Env[IO] {
+    forAllF { (profile: Option[String]) =>
+      given NetworkInterfaces[IO] = NoNetworkInterfaces[IO]
+      given Env[IO] with {
         override def get(name: String): IO[Option[String]] =
           profile.filter(_ => name == "AWS_PROFILE").pure[IO]
 
@@ -148,7 +149,7 @@ class FakeInstanceMetadataServiceSpec
     }
   }
 
-  private implicit def arbProfiles[F[_] : Applicative]: Arbitrary[AwsCredentials[F]] = Arbitrary {
+  given [F[_]](using Applicative[F]): Arbitrary[AwsCredentials[F]] = Arbitrary {
     arbitrary[NonEmptyList[(NonEmptyString, (String, String))]].map { values =>
       AwsCredentialsMap[F](values.toList.map { case (k, (s1, s2)) =>
         k.value -> Map("aws_access_key_id" -> s1, "aws_secret_access_key" -> s2)
@@ -156,15 +157,17 @@ class FakeInstanceMetadataServiceSpec
     }
   }
 
-  private implicit def shrinkProfiles[F[_]]: Shrink[AwsCredentials[F]] = Shrink.shrinkAny
+  given [F[_]]: Shrink[AwsCredentials[F]] = Shrink.shrinkAny
 
   test("GET /latest/meta-data/iam/security-credentials/{profile}") {
     forAllF { (creds: AwsCredentials[IO], ts: FiniteDuration) =>
-      implicit val networkInterfaces: NetworkInterfaces[IO] = NoNetworkInterfaces[IO]
-      implicit val awsCredentials: AwsCredentials[IO] = creds
-      implicit val clock: Clock[IO] = new Clock[IO] {
-        override def applicative: Applicative[IO] = implicitly
+      given NetworkInterfaces[IO] = NoNetworkInterfaces[IO]
+      given AwsCredentials[IO] = creds
+      given Clock[IO] with {
+        override def applicative: Applicative[IO] = summon
+
         override def monotonic: IO[FiniteDuration] = IO.pure(ts)
+
         override def realTime: IO[FiniteDuration] = IO.pure(ts)
       }
 
@@ -191,7 +194,7 @@ class FakeInstanceMetadataServiceSpec
 
   test("GET /latest/meta-data/placement/region") {
     forAllF { (defaultRegion: Option[String], region: Option[String]) =>
-      implicit val env: Env[IO] = new Env[IO] {
+      given Env[IO] with {
         override def get(name: String): IO[Option[String]] =
           entries.map(_.toMap.get(name))
 
@@ -211,7 +214,7 @@ class FakeInstanceMetadataServiceSpec
 
   test("PUT /latest/api/token") {
     forAllF { (generatedToken: UUID) =>
-      implicit val uuidGen: UUIDGen[IO] = new UUIDGen[IO] {
+      given UUIDGen[IO] with {
         override def randomUUID: IO[UUID] = generatedToken.pure[IO]
       }
 
@@ -228,7 +231,7 @@ class FakeInstanceMetadataServiceSpec
                envAddr: Option[IpAddress],
                ipAddress: Option[IpAddress],
               ) =>
-      implicit val env: Env[IO] = new Env[IO] {
+      given Env[IO] with {
         override def get(name: String): IO[Option[String]] =
           entries.map(_.toMap.get(name))
 
@@ -238,7 +241,7 @@ class FakeInstanceMetadataServiceSpec
             envAddr.map(_.toString).map("LOCAL_ADDR" -> _)).toList.pure[IO]
       }
 
-      implicit val networkInterfaces: NetworkInterfaces[IO] = new NoNetworkInterfaces[IO] {
+      given NetworkInterfaces[IO] = new NoNetworkInterfaces[IO] {
         override def guessMyIp: IO[Option[IpAddress]] = IO.pure(ipAddress)
       }
 

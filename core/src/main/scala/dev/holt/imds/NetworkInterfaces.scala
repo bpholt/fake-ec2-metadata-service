@@ -17,9 +17,9 @@ trait NetworkInterfaces[F[_]] {
 }
 
 object NetworkInterfaces {
-  def apply[F[_] : NetworkInterfaces]: NetworkInterfaces[F] = implicitly
+  def apply[F[_] : NetworkInterfaces]: NetworkInterfaces[F] = summon
 
-  implicit def instance[F[_] : Sync]: NetworkInterfaces[F] = new NetworkInterfaces[F] {
+  given[F[_]] (using Sync[F]): NetworkInterfaces[F] with {
     override def listInterfaces: Stream[F, NetworkInterface] =
       Stream.evalSeq(Sync[F].delay {
         NetworkInterface.getNetworkInterfaces.asScala.toSeq
