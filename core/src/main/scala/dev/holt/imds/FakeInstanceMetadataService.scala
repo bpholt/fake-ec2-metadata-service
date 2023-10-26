@@ -2,6 +2,7 @@ package dev.holt.imds
 
 import cats.effect.*
 import cats.syntax.all.*
+import io.circe.literal.*
 import io.circe.syntax.*
 import mouse.all.*
 import org.http4s.HttpRoutes
@@ -49,7 +50,42 @@ class FakeInstanceMetadataService[F[_] : Concurrent](instanceMetadata: InstanceM
 
   }
 
-  val routes: HttpRoutes[F] = Router("/latest/meta-data" -> latestMetaData)
+  private val dynamic = HttpRoutes.of[F] {
+    case GET -> Root / "instance-identity" / "document" =>
+      for {
+        ip <- instanceMetadata.localIpv4
+        instanceId <- instanceMetadata.instanceId
+        imageId <- instanceMetadata.amiId
+        region <- instanceMetadata.region
+        /* TODO
+            "devpayProductCodes": null,
+            "availabilityZone": null,
+            "billingProducts": null,
+            "instanceType": null,
+            "accountId": null,
+            "pendingTime": null,
+            "architecture": null,
+            "kernelId": null,
+            "ramdiskId": null,
+         */
+        body =
+          json"""{
+            "marketplaceProductCodes": [],
+            "privateIp": $ip,
+            "version": "2017-09-30",
+            "instanceId": $instanceId,
+            "imageId": $imageId,
+            "region": $region
+          }"""
+        res <- Ok(body)
+      } yield res
+
+  }
+
+  val routes: HttpRoutes[F] = Router(
+    "/latest/meta-data" -> latestMetaData,
+    "/latest/dynamic" -> dynamic,
+  )
 }
 
 object ProfileName {

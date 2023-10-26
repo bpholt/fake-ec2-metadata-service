@@ -207,4 +207,39 @@ class FakeInstanceMetadataServiceSpec
         }
     }
   }
+
+  test("GET /latest/dynamic/instance-identity/document") {
+    forAllF { (defaultRegion: Option[String],
+               region: Option[String],
+               envAddr: Option[IpAddress],
+               ipAddress: Option[IpAddress],
+              ) =>
+      implicit val env: Env[IO] = new Env[IO] {
+        override def get(name: String): IO[Option[String]] =
+          entries.map(_.toMap.get(name))
+
+        override def entries: IO[immutable.Iterable[(String, String)]] =
+          (defaultRegion.map("AWS_DEFAULT_REGION" -> _) ++
+            region.map("AWS_REGION" -> _) ++
+            envAddr.map(_.toString).map("LOCAL_ADDR" -> _)).toList.pure[IO]
+      }
+
+      implicit val networkInterfaces: NetworkInterfaces[IO] = new NoNetworkInterfaces[IO] {
+        override def guessMyIp: IO[Option[IpAddress]] = IO.pure(ipAddress)
+      }
+
+      val client = org.http4s.client.Client.fromHttpApp(new FakeInstanceMetadataService(InstanceMetadata[IO]).routes.orNotFound)
+
+      client.expect[Json](GET(uri"/latest/dynamic/instance-identity/document"))
+        .map(assertEquals(_,
+          json"""{
+            "marketplaceProductCodes": [],
+            "privateIp": ${envAddr.orElse(ipAddress)},
+            "version": "2017-09-30",
+            "instanceId": "i-local",
+            "imageId": "ami-local",
+            "region": ${defaultRegion.orElse(region).getOrElse("us-west-2")}
+          }"""))
+    }
+  }
 }
