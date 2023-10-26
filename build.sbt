@@ -42,6 +42,9 @@ ThisBuild / githubWorkflowPublish := Seq(
 )
 ThisBuild / githubWorkflowPublishTargetBranches := Seq(RefPredicate.StartsWith(Ref.Tag("v")))
 ThisBuild / tlCiMimaBinaryIssueCheck := false
+ThisBuild / mergifyStewardConfig ~= {
+  _.map(_.copy(mergeMinors = true))
+}
 
 lazy val root = project.in(file(".")).enablePlugins(NoPublishPlugin).aggregate(
   `fake-ec2-metadata-service`
