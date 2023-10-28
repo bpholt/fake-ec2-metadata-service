@@ -58,7 +58,7 @@ lazy val `fake-ec2-metadata-service` = project
       "org.http4s" %% "http4s-ember-server" % "0.23.23",
       "org.http4s" %% "http4s-dsl" % "0.23.23",
       "org.http4s" %% "http4s-circe" % "0.23.23",
-      "com.comcast" %% "ip4s-core" % "3.2.0",
+      "com.comcast" %% "ip4s-core" % "3.3.0",
       "io.circe" %% "circe-core" % "0.14.6",
       "io.circe" %% "circe-generic" % "0.14.6",
       "io.circe" %% "circe-literal" % "0.14.6",
