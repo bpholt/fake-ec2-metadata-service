@@ -71,7 +71,7 @@ lazy val `fake-ec2-metadata-service` = project
       "org.typelevel" %% "scalacheck-effect-munit" % "2.0.0-M2" % Test,
       "org.http4s" %% "http4s-client" % "0.23.23" % Test,
       "com.comcast" %% "ip4s-test-kit" % "3.3.0" % Test,
-      "eu.timepit" %% "refined-scalacheck" % "0.11.0" % Test,
+      "eu.timepit" %% "refined-scalacheck" % "0.10.3" % Test,
       "org.typelevel" %% "cats-testkit" % "2.10.0" % Test,
       "org.typelevel" %% "cats-laws" % "2.10.0" % Test,
       "org.typelevel" %% "discipline-munit" % "2.0.0-M3" % Test,
