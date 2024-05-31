@@ -74,7 +74,7 @@ lazy val `fake-ec2-metadata-service` = project
       "eu.timepit" %% "refined-scalacheck" % "0.11.2" % Test,
       "org.typelevel" %% "cats-testkit" % "2.12.0" % Test,
       "org.typelevel" %% "cats-laws" % "2.12.0" % Test,
-      "org.typelevel" %% "discipline-munit" % "2.0.0-M3" % Test,
+      "org.typelevel" %% "discipline-munit" % "2.0.0" % Test,
     ),
     dockerUsername := Option("bpholt"),
     dockerBaseImage := "eclipse-temurin:17",
