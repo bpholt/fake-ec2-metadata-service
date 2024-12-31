@@ -64,7 +64,7 @@ lazy val `fake-ec2-metadata-service` = project
       "io.circe" %% "circe-literal" % "0.14.10",
       "dev.holt" %% "java-time-literals" % "1.1.1",
       "software.amazon.awssdk" % "profiles" % "2.29.43",
-      "io.monix" %% "newtypes-core" % "0.2.3",
+      "io.monix" %% "newtypes-core" % "0.3.0",
       "org.typelevel" %% "mouse" % "1.3.2",
       "ch.qos.logback" % "logback-classic" % "1.5.15" % Runtime,
       "org.typelevel" %% "munit-cats-effect" % "2.0.0" % Test,
