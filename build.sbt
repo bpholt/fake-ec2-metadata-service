@@ -67,7 +67,7 @@ lazy val `fake-ec2-metadata-service` = project
       "io.monix" %% "newtypes-core" % "0.3.0",
       "org.typelevel" %% "mouse" % "1.3.2",
       "ch.qos.logback" % "logback-classic" % "1.5.19" % Runtime,
-      "org.typelevel" %% "munit-cats-effect" % "2.0.0" % Test,
+      "org.typelevel" %% "munit-cats-effect" % "2.1.0" % Test,
       "org.typelevel" %% "scalacheck-effect-munit" % "2.0.0-M2" % Test,
       "org.http4s" %% "http4s-client" % "0.23.32" % Test,
       "com.comcast" %% "ip4s-test-kit" % "3.7.0" % Test,
