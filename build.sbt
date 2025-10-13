@@ -34,7 +34,8 @@ ThisBuild / githubWorkflowPublish := Seq(
     "tags" -> "type=semver,pattern={{raw}}"
   )),
   WorkflowStep.Use(name = Option("Build and push"), ref = UseRef.Public("docker", "build-push-action", "v4"), params = Map(
-    "context" -> (`fake-ec2-metadata-service` / Docker / stagingDirectory).value.relativeTo((root / baseDirectory).value).get.getPath,
+    // https://github.com/sbt/sbt-native-packager/issues/1699
+    "context" -> (`fake-ec2-metadata-service` / Docker / UniversalPlugin.autoImport.stagingDirectory).value.relativeTo((root / baseDirectory).value).get.getPath,
     "platforms" -> "linux/amd64,linux/arm64",
     "push" -> "${{ github.event_name != 'pull_request' && (startsWith(github.ref, 'refs/tags/v')) }}",
     "tags" -> "${{ steps.meta.outputs.tags }}",
