@@ -67,7 +67,7 @@ lazy val `fake-ec2-metadata-service` = project
       "software.amazon.awssdk" % "profiles" % "2.41.8",
       "io.monix" %% "newtypes-core" % "0.3.0",
       "org.typelevel" %% "mouse" % "1.4.0",
-      "ch.qos.logback" % "logback-classic" % "1.5.24" % Runtime,
+      "ch.qos.logback" % "logback-classic" % "1.5.25" % Runtime,
       "org.typelevel" %% "munit-cats-effect" % "2.1.0" % Test,
       "org.typelevel" %% "scalacheck-effect-munit" % "2.0.0-M2" % Test,
       "org.http4s" %% "http4s-client" % "0.23.33" % Test,
