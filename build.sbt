@@ -56,9 +56,9 @@ lazy val `fake-ec2-metadata-service` = project
   .settings(
     name := "fake-ec2-metadata-service",
     libraryDependencies ++= Seq(
-      "org.http4s" %% "http4s-ember-server" % "0.23.33",
-      "org.http4s" %% "http4s-dsl" % "0.23.33",
-      "org.http4s" %% "http4s-circe" % "0.23.33",
+      "org.http4s" %% "http4s-ember-server" % "0.23.34",
+      "org.http4s" %% "http4s-dsl" % "0.23.34",
+      "org.http4s" %% "http4s-circe" % "0.23.34",
       "com.comcast" %% "ip4s-core" % "3.7.0",
       "io.circe" %% "circe-core" % "0.14.15",
       "io.circe" %% "circe-generic" % "0.14.15",
@@ -70,7 +70,7 @@ lazy val `fake-ec2-metadata-service` = project
       "ch.qos.logback" % "logback-classic" % "1.5.32" % Runtime,
       "org.typelevel" %% "munit-cats-effect" % "2.2.0" % Test,
       "org.typelevel" %% "scalacheck-effect-munit" % "2.1.0" % Test,
-      "org.http4s" %% "http4s-client" % "0.23.33" % Test,
+      "org.http4s" %% "http4s-client" % "0.23.34" % Test,
       "com.comcast" %% "ip4s-test-kit" % "3.7.0" % Test,
       "eu.timepit" %% "refined-scalacheck" % "0.11.3" % Test,
       "org.typelevel" %% "cats-testkit" % "2.13.0" % Test,
